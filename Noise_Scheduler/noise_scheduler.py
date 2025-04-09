@@ -23,8 +23,8 @@ class NoiseScheduler:
         image_shape= image.shape 
         batch_size= image_shape[0]
         # reshape the 't'  noise scaling factor to match the batch size
-        sqrt_cum_prod= self.sqrt_cumulative_product[t].reshape(batch_size)
-        sqrt_one_minus_cum_prod=self.sqrt_one_minus_cumulative_product[t].reshape(batch_size)
+        sqrt_cum_prod= self.sqrt_cumulative_product.to(t.device)[t].reshape(batch_size)
+        sqrt_one_minus_cum_prod=self.sqrt_one_minus_cumulative_product.to(t.device)[t].reshape(batch_size)
         #extend the shape of noise scaling factor to [batch_size,1,1,1]
         for _ in range(len(image_shape)-1):
             sqrt_cum_prod=sqrt_cum_prod.unsqueeze(-1)
@@ -45,8 +45,8 @@ class NoiseScheduler:
         if t==0:
             return mean, x_0
         else: 
-            varaince = (1-self.alpha_cum_prod[t-1])/(1-self.alpha_cum_prod[t])
+            varaince = (1-self.cumulative_product[t-1])/(1-self.cumulative_product[t])
             varaince= varaince *self.betas[t]
             sigma = torch.sqrt(varaince)
             z=torch.randn(x_t.shape).to(x_t.device)
-            return mean +sigma*z, x_0 #: Add noise to the mean, ensuring stochasticity.
+            return mean +sigma*z, x_0 #Add noise to the mean, ensuring stochasticity.
