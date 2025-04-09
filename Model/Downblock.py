@@ -28,7 +28,7 @@ class DownBlock(nn.Module):
                                           stride=2,
                                           padding=1) if self.down_sample else nn.Identity()
         
-        def forward(self,x,t_emb):
+    def forward(self,x,t_emb):
             out=x 
             out = self.first_layer(out)
             out = out + self. t_emb_layers(t_emb)[:,:,None, None]
@@ -43,5 +43,5 @@ class DownBlock(nn.Module):
             out_attn=out_attn.transpose(1,2).reshape(batch_size,channels, h,w)
             out = out+out_attn
 
-            out= self.down_sample.conv(out)
+            out= self.down_sample_layer(out)
             return out
