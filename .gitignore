@@ -1,1 +1,5 @@
 myenv/
+data/
+samples/
+train_result/
+**/__pycache__/
